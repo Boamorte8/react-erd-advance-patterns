@@ -4,14 +4,22 @@
 import * as React from 'react'
 import {Switch} from '../switch'
 
-const callAll = (...fns) => (...args) => fns.forEach(fn => fn?.(...args))
+const callAll =
+  (...fns) =>
+  (...args) =>
+    fns.forEach(fn => fn?.(...args))
+
+const TOGGLE_ACTIONS = {
+  TOGGLE: 'TOGGLE',
+  RESET: 'RESET',
+}
 
 function toggleReducer(state, {type, initialState}) {
   switch (type) {
-    case 'toggle': {
+    case TOGGLE_ACTIONS.TOGGLE: {
       return {on: !state.on}
     }
-    case 'reset': {
+    case TOGGLE_ACTIONS.RESET: {
       return initialState
     }
     default: {
@@ -21,16 +29,16 @@ function toggleReducer(state, {type, initialState}) {
 }
 
 // 🐨 add a new option called `reducer` that defaults to `toggleReducer`
-function useToggle({initialOn = false} = {}) {
+function useToggle({initialOn = false, reducer = toggleReducer} = {}) {
   const {current: initialState} = React.useRef({on: initialOn})
   // 🐨 instead of passing `toggleReducer` here, pass the `reducer` that's
   // provided as an option
   // ... and that's it! Don't forget to check the 💯 extra credit!
-  const [state, dispatch] = React.useReducer(toggleReducer, initialState)
+  const [state, dispatch] = React.useReducer(reducer, initialState)
   const {on} = state
 
-  const toggle = () => dispatch({type: 'toggle'})
-  const reset = () => dispatch({type: 'reset', initialState})
+  const toggle = () => dispatch({type: TOGGLE_ACTIONS.TOGGLE})
+  const reset = () => dispatch({type: TOGGLE_ACTIONS.RESET, initialState})
 
   function getTogglerProps({onClick, ...props} = {}) {
     return {
@@ -62,13 +70,13 @@ function App() {
 
   function toggleStateReducer(state, action) {
     switch (action.type) {
-      case 'toggle': {
+      case TOGGLE_ACTIONS.TOGGLE: {
         if (clickedTooMuch) {
           return {on: state.on}
         }
         return {on: !state.on}
       }
-      case 'reset': {
+      case TOGGLE_ACTIONS.RESET: {
         return {on: false}
       }
       default: {
@@ -106,8 +114,3 @@ function App() {
 }
 
 export default App
-
-/*
-eslint
-  no-unused-vars: "off",
-*/
