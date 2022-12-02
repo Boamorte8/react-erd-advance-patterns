@@ -8,10 +8,10 @@ function useToggle() {
   const [on, setOn] = React.useState(false)
   const toggle = () => setOn(!on)
 
-  const getTogglerProps = ({onClick, ...props}) => ({
+  const getTogglerProps = ({onClick, ...props} = {}) => ({
     onClick: () => {
       toggle()
-      if (onClick) onClick()
+      onClick && onClick()
     },
     ...props,
   })
@@ -20,6 +20,7 @@ function useToggle() {
   // 💰 {'aria-pressed': on, onClick: toggle}
   return {
     on,
+    toggle,
     getTogglerProps,
     togglerProps: {'aria-pressed': on, onClick: toggle},
   }
